@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +73,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dresden_rallye.wsgi.application'
 
+# Django REST framework
+# https://www.django-rest-framework.org/
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'user.backends.EmailBackend',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+# Custom user model
+AUTH_USER_MODEL = 'user.CustomUser'
+
+# Custom authentication backend for authenticating a user with email and password
+AUTHENTICATION_BACKENDS = (
+    'user.backends.EmailBackend'
+)
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
