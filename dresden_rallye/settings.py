@@ -90,7 +90,7 @@ AUTH_USER_MODEL = 'user.CustomUser'
 
 # Custom authentication backend for authenticating a user with email and password
 AUTHENTICATION_BACKENDS = (
-    'user.backends.EmailBackend'
+    'user.backends.EmailBackend',
 )
 
 # Database
