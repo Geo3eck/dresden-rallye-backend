@@ -3,8 +3,18 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 
 from django.core.cache import caches
+from django.core.validators import EmailValidator
+from django.core.exceptions import ObjectDoesNotExist
 from rest_captcha.settings import api_settings
 from rest_captcha import utils
+
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'email',
+        ]
 
 
 class SignUpUserSerializer(serializers.Serializer):
@@ -47,3 +57,32 @@ class SignUpUserSerializer(serializers.Serializer):
         )
 
         return validated_data
+
+
+class SignInUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'email',
+            'password'
+        ]
+        extra_kwargs = {
+            'email': {'validators': [EmailValidator,]},
+        }
+
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+
+        try:
+            user = CustomUser.objects.get(email=email)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError("Unable to log in with provided credentials.")
+        
+        
+        password = user.check_password(password)
+
+        if password and user.is_active:
+            return user
+
+        raise serializers.ValidationError("Unable to log in with provided credentials.")
