@@ -51,3 +51,51 @@ class SignUpTests(APITestCase):
         response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class SignInTests(APITestCase):
+    def test_sign_in_correct(self):
+        url = reverse('user-signin')
+        data = {
+            'email': 'example@example.com',
+            'password': 'test123pass#@!'
+        }
+
+        CustomUser.objects.create_user(
+            'example@example.com',
+            'test123pass#@!',
+        )
+
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('token', response.data)
+
+    def test_sign_in_wrong_email(self):
+        url = reverse('user-signin')
+        data = {
+            'email': 'ex@example.com',
+            'password': 'test123pass#@!'
+        }
+
+        CustomUser.objects.create_user(
+            'example@example.com',
+            'test123pass#@!',
+        )
+        
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_sign_in_wrong_password(self):
+        url = reverse('user-signin')
+        data = {
+            'email': 'example@example.com',
+            'password': 'test123#@!'
+        }
+        
+        CustomUser.objects.create_user(
+            'example@example.com',
+            'test123pass#@!',
+        )
+
+        response = self.client.post(url, data=data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
