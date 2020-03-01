@@ -20,5 +20,5 @@ from user.urls import urlpatterns as user_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'api/captcha/', include('rest_captcha.urls')),
+    re_path(r'api/user/captcha/', include('rest_captcha.urls')),
 ] + user_urlpatterns

@@ -8,6 +8,10 @@ from rest_framework.authtoken.models import Token
 from .serializers import CustomUserSerializer, SignUpUserSerializer, SignInUserSerializer
 
 class SignUpAPI(generics.GenericAPIView):
+    """
+    Requires an mail address, a password and a valid captcha value.
+    """
+
     serializer_class = SignUpUserSerializer
     permission_classes = (permissions.AllowAny, )
 
@@ -19,6 +23,11 @@ class SignUpAPI(generics.GenericAPIView):
         return Response(status=status.HTTP_201_CREATED)
 
 class SignInAPI(generics.GenericAPIView):
+    """
+    Requires an email address and a valid password.
+    Returns serialized user and a user token
+    """
+
     serializer_class = SignInUserSerializer
     permission_classes = (permissions.AllowAny, )
 
